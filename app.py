@@ -17,7 +17,7 @@ st.set_page_config(
 # ==========================================
 # 2. 데이터베이스(SQLite) 연동 및 초기화
 # ==========================================
-DB_PATH = "전기차 분석.db
+DB_PATH = "전기차 분석.db"
 
 def init_db():
     if not os.path.exists('database'):
