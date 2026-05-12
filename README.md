@@ -1,6 +1,7 @@
 (1) 사용한 프롬프트 공유 링크
 
-https://gemini.google.com/share/3905c8618158 (SQL 쿼리 작성)
+(SQL 쿼리 작성) https://gemini.google.com/share/3905c8618158 
+
 https://aistudio.google.com/app/prompts?state=%7B%22ids%22:%5B%221ej8iSqjmMpPRvraUXeKcSPeJmL9qdsrs%22%5D,%22action%22:%22open%22,%22userId%22:%22105110444616329404886%22,%22resourceKeys%22:%7B%7D%7D&usp=sharing
 
 
@@ -32,4 +33,10 @@ https://aistudio.google.com/app/prompts?state=%7B%22ids%22:%5B%221ej8iSqjmMpPRvr
 
 
 (3) 시각화 결과 (차트 설명 및 인사이트) 
+- 차트1
 
+
+- 차트2
+
+
+- 차트3
