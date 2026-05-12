@@ -17,21 +17,7 @@ st.set_page_config(
 )
 
 # ----------------------------------------------------------------------
-# 2. 사이드바 구성
-# ----------------------------------------------------------------------
-with st.sidebar:
-    st.title("⚡ EV 대시보드 설정")
-    st.info(
-        "**[안내] Gemini API 모델 설정**\n\n"
-        "현재 가장 효율적인 `gemini-2.0-flash-lite` 모델을 사용 중입니다.\n"
-        "무료 티어 이용 시 분당 요청 수(RPM) 제한에 주의해 주세요."
-    )
-    st.write("---")
-    st.write("👨‍💻 **개발자:** Senior Data Engineer")
-    st.write("📅 **기준일:** 2026년 기준 시뮬레이션")
-
-# ----------------------------------------------------------------------
-# 3. 데이터베이스 및 API 연결 초기화
+# 2. 데이터베이스 및 API 연결 초기화
 # ----------------------------------------------------------------------
 try:
     SUPABASE_URL = st.secrets["SUPABASE_URL"]
@@ -100,6 +86,30 @@ with tab1:
     fig1.add_trace(go.Scatter(x=df['지역'], y=df['충전소_수'], name="충전소 수", mode='lines+markers', line=dict(color='#e74c3c', width=3)), secondary_y=True)
     fig1.update_layout(hovermode="x unified")
     st.plotly_chart(fig1, use_container_width=True)
+
+    # --- SQL 및 인사이트 추가 구간 ---
+    col1_sql, col1_ins = st.columns(2)
+    with col1_sql:
+        st.markdown("### 🔍 Used SQL Query")
+        st.code("""
+SELECT 
+    reg.시도 AS [등록현황_지역명],
+    chg.시도 AS [충전소_지역명],
+    -- 2022년 등록 대수 합계
+    SUM(reg.`2022년 출고대수`) AS [전기차_등록대수],
+    -- 2022년 충전소 수
+    MAX(chg.`2022`) AS [충전소_수],
+    -- 비율 계산
+    ROUND(SUM(reg.`2022년 출고대수`) * 1.0 / MAX(chg.`2022`), 2) AS [충전소1개당_차량수]
+FROM `지역별 전기 자동차 등록 및 보조금 신청 현황` reg
+JOIN `지역별 전기차 충전소 현황정보` chg 
+  -- 지역명의 앞 2글자만 추출하여 비교 (예: '서울' vs '서울특별시')
+  ON SUBSTR(reg.시도, 1, 2) = SUBSTR(chg.시도, 1, 2)
+GROUP BY reg.시도, chg.시도
+ORDER BY [전기차_등록대수] DESC; """, language='sql')
+    with col1_ins:
+        st.markdown("### 💡 Analysis Insight")
+        st.info("여기에 첫 번째 탭의 분석 결과(예: 서울/경기 지역의 집중화 등)를 입력하세요.")
 
 with tab2:
     st.subheader("충전 인프라 부족도 (충전소 1개당 EV 대수)")
