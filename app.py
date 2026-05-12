@@ -105,7 +105,8 @@ JOIN `지역별 전기차 충전소 현황정보` chg
   -- 지역명의 앞 2글자만 추출하여 비교 (예: '서울' vs '서울특별시')
   ON SUBSTR(reg.시도, 1, 2) = SUBSTR(chg.시도, 1, 2)
 GROUP BY reg.시도, chg.시도
-ORDER BY [전기차_등록대수] DESC; """, language='sql')
+ORDER BY [전기차_등록대수] DESC; 
+""", language='sql')
     with col1_ins:
         st.markdown("### 💡 분석 인사이트")
         st.info("불균형적인 인프라 공급: 전기차 보급량 대비 충전 인프라는 전국적으로 매우 불균형하게 공급되고 있다. 
