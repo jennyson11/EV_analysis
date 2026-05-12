@@ -17,34 +17,26 @@ st.set_page_config(
 # ==========================================
 # 2. 데이터베이스(SQLite) 연동 및 초기화 함수
 # ==========================================
-DB_PATH = "database/ev_data.db"
+# 1. 파일이 루트에 있다고 가정할 때의 경로
+DB_PATH = "ev_data.db" 
 
-def init_db():
-    """데이터베이스와 테이블을 생성하는 함수입니다."""
-    # database 폴더가 없으면 생성
-    if not os.path.exists('database'):
-        os.makedirs('database')
+# 2. 데이터 불러오기 함수 (기존 init_db 제거 또는 수정)
+@st.cache_data
+def load_data():
+    if not os.path.exists(DB_PATH):
+        st.error(f"파일 {DB_PATH}를 찾을 수 없습니다. GitHub에 데이터 파일이 있는지 확인하세요.")
+        return pd.DataFrame()
         
     conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    
-    # 통합 분석용 테이블 생성 (초보자를 위해 복잡한 JOIN 대신 통합 테이블 1개를 사용합니다)
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS integrated_ev_data (
-            sido TEXT,
-            sigungu TEXT,
-            ev_count INTEGER,
-            subsidy_notice INTEGER,
-            subsidy_applied INTEGER,
-            station_count INTEGER,
-            PRIMARY KEY (sido, sigungu)
-        )
-    ''')
-    conn.commit()
+    df = pd.read_sql_query("SELECT * FROM integrated_ev_data", conn)
     conn.close()
+    return df
 
-# 앱 실행 시 DB 초기화
-init_db()
+# 3. 데이터 로드
+df = load_data()
+
+if df.empty:
+    st.stop()
 
 # ==========================================
 # 3. 데이터 전처리(Cleansing) 함수
